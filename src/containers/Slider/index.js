@@ -1,24 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
 
 import "./style.scss";
 
+
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+  const timeoutRef = useRef(null);
+
+  const delay = 5000;
+
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
+
   const nextCard = () => {
     setTimeout(
       () => setIndex(index < byDateDesc.length ? index + 1 : 0),
       5000
     );
   };
+
+
+
+  function resetTimeout() {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }
+
+
+  useEffect(() => {
+    resetTimeout();
+    timeoutRef.current = setTimeout(
+      () =>
+        setIndex((prevIndex) =>
+          prevIndex === byDateDesc.length - 1 ? 0 : prevIndex + 1
+        ),
+      delay
+    );
+
+    return () => {
+      resetTimeout();
+    };
+  }, [index]);
+
+
+
+
+
   useEffect(() => {
     nextCard();
   }, []);
+
+
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
@@ -45,6 +82,9 @@ const Slider = () => {
                   type="radio"
                   name="radio-button"
                   checked={idx === radioIdx}
+                  onClick={() => {
+                    setIndex(idx);
+                  }}
                 />
               ))}
             </div>
