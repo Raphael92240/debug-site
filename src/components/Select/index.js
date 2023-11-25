@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 import "./style.scss";
 
+// Définition du composant Select
 const Select = ({
   selection,
   onChange,
@@ -13,10 +14,14 @@ const Select = ({
   label,
   type = "normal",
 }) => {
+
+  // Définition des états
   const [value, setValue] = useState();
   const [collapsed, setCollapsed] = useState(true);
+
+  // Fonction pour mettre à jour la valeur
   const changeValue = (newValue) => {
-    onChange();
+    onChange(newValue);
     setValue(newValue);
     setCollapsed(newValue);
   };

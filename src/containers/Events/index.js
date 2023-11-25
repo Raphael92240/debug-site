@@ -10,13 +10,18 @@ import "./style.css";
 const PER_PAGE = 9;
 
 const EventList = () => {
+  // Utilisation du hook useData pour récupérer les données et erreur s'il y en a
   const { data, error } = useData();
+
+  // Etat local "type" pour filtrer les événements par type
   const [type, setType] = useState();
+
+  // Etat local "currentPage" pour gérer la pagination
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Filtrage des événements en fonction du type sélectionné et de la pagination
   const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
+    (!type ? data?.events : data?.events.filter((event) => event.type === type)) || []
   ).filter((event, index) => {
     if (
       (currentPage - 1) * PER_PAGE <= index &&
@@ -26,6 +31,7 @@ const EventList = () => {
     }
     return false;
   });
+
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
